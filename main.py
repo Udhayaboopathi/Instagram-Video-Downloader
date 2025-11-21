@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from igbyte import download_reel
@@ -155,29 +155,45 @@ async def home(request: Request):
     )
 
 
-@app.post("/download", response_class=HTMLResponse)
+@app.post("/download")
 async def download_video(request: Request, instagram_url: str = Form(...)):
-    """Download Instagram video"""
+    """Download Instagram content - supports both HTML and JSON responses"""
+    
+    # Check if it's an AJAX request
+    is_ajax = request.headers.get('sec-fetch-mode') == 'cors' or \
+              request.headers.get('x-requested-with') == 'XMLHttpRequest'
     
     # Validate input
     if not instagram_url or instagram_url.strip() == "":
+        error_msg = "Please enter a valid Instagram URL"
+        if is_ajax:
+            return JSONResponse(
+                status_code=400,
+                content={"error": error_msg, "success": False}
+            )
         return templates.TemplateResponse(
             "index.html",
             {
                 "request": request,
                 "content": None,
-                "error": "Please enter a valid Instagram URL"
+                "error": error_msg
             }
         )
     
     # Validate URL format
     if not validate_instagram_url(instagram_url):
+        error_msg = "Invalid Instagram URL format. Please use a valid Reel, Post, or IGTV link."
+        if is_ajax:
+            return JSONResponse(
+                status_code=400,
+                content={"error": error_msg, "success": False}
+            )
         return templates.TemplateResponse(
             "index.html",
             {
                 "request": request,
                 "content": None,
-                "error": "Invalid Instagram URL format. Please use a valid Reel, Post, or IGTV link."
+                "error": error_msg
             }
         )
     
@@ -187,7 +203,16 @@ async def download_video(request: Request, instagram_url: str = Form(...)):
         content_data = download_instagram_content(instagram_url)
         print(f"Downloaded content: {content_data}")
         
-        # Render success page with content
+        # Return JSON for AJAX requests
+        if is_ajax:
+            return JSONResponse(
+                content={
+                    "success": True,
+                    "content": content_data
+                }
+            )
+        
+        # Render success page with content for regular requests
         return templates.TemplateResponse(
             "index.html",
             {
@@ -215,6 +240,13 @@ async def download_video(request: Request, instagram_url: str = Form(...)):
             error_message = "Instagram is rate limiting requests. Please wait a few minutes and try again.\n\n✅ Note: Reels usually work better than regular posts!"
         else:
             error_message = f"Unable to fetch content: {str(e)}\n\n💡 Reels work best with this tool!"
+        
+        # Return JSON for AJAX requests
+        if is_ajax:
+            return JSONResponse(
+                status_code=400,
+                content={"error": error_message, "success": False}
+            )
         
         return templates.TemplateResponse(
             "index.html",

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram Video Downloader</title>
-    <link rel="icon" type="image/png" href="/static/img.png">
+    <link rel="icon" type="image/png" href="/static/logo.png">
     <style>
         * {
             margin: 0;
@@ -163,6 +163,13 @@
         .logo-icon {
             font-size: 2rem;
             animation: pulse 2s infinite;
+        }
+
+        .logo-icon-img {
+            width: 50px;
+            height: 50px;
+            animation: pulse 2s infinite;
+            border-radius: 10px;
         }
 
         @keyframes pulse {
@@ -401,6 +408,14 @@
         .instagram-icon {
             font-size: 3rem;
             margin-bottom: 15px;
+        }
+
+        .instagram-icon-img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+            border-radius: 15px;
         }
 
         .form-container {
@@ -761,6 +776,16 @@
                 font-size: 2.5rem;
             }
 
+            .logo-icon-img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .instagram-icon-img {
+                width: 60px;
+                height: 60px;
+            }
+
             /* Mobile responsive */
             .top-header {
                 padding: 12px 15px;
@@ -907,7 +932,7 @@
     <header class="top-header">
         <div class="header-content">
             <div class="logo-section">
-                <div class="logo-icon">📸</div>
+                <img src="/static/logo.png" alt="Logo" class="logo-icon-img">
                 <div class="logo-text">
                     <h1>Insta Downloader</h1>
                     <p>Fast & Free Instagram Content Downloader</p>
@@ -931,7 +956,7 @@
     <div class="main-wrapper">
         <div class="container">
             <div class="header">
-                <div class="instagram-icon">📸</div>
+                <img src="/static/logo.png" alt="Instagram Downloader" class="instagram-icon-img">
                 <h1>Instagram Downloader</h1>
                 <p>Download Instagram Reels, Videos, Images & More</p>
             </div>
@@ -1220,72 +1245,30 @@
                     body: formData
                 });
                 
-                const html = await response.text();
+                const data = await response.json();
                 
-                // Parse the response to extract content data
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
+                loadingDiv.style.display = 'none';
                 
-                // Check for errors
-                const errorElement = doc.querySelector('.error-message');
-                if (errorElement) {
-                    const errorText = errorElement.textContent.replace('❌ Error:', '').trim();
-                    document.getElementById('errorText').textContent = errorText;
-                    errorDiv.style.display = 'block';
-                    loadingDiv.style.display = 'none';
-                    return;
-                }
-                
-                // Extract content from the response (this is a workaround since we're getting HTML)
-                // In a real API, this would be JSON
-                const videoElement = doc.querySelector('video source');
-                const imageElement = doc.querySelector('.image-container img');
-                const carouselItems = doc.querySelectorAll('.carousel-item');
-                const captionElement = doc.querySelector('.success-section p');
-                
-                let content = {};
-                
-                if (videoElement) {
-                    content = {
-                        type: 'video',
-                        video_url: videoElement.getAttribute('src'),
-                        caption: captionElement ? captionElement.textContent : ''
-                    };
-                } else if (carouselItems.length > 0) {
-                    content = {
-                        type: 'carousel',
-                        images: Array.from(carouselItems).map(item => {
-                            const video = item.querySelector('video source');
-                            const img = item.querySelector('img');
-                            return {
-                                type: video ? 'video' : 'image',
-                                url: video ? video.getAttribute('src') : img.getAttribute('src')
-                            };
-                        }),
-                        caption: captionElement ? captionElement.textContent : ''
-                    };
-                } else if (imageElement) {
-                    content = {
-                        type: 'image',
-                        images: [{ url: imageElement.getAttribute('src') }],
-                        caption: captionElement ? captionElement.textContent : ''
-                    };
-                }
-                
-                if (content.type) {
-                    renderContent(content);
+                if (data.success && data.content) {
+                    // Render content and show success section
+                    renderContent(data.content);
                     successDiv.style.display = 'block';
-                } else {
-                    document.getElementById('errorText').textContent = 'Failed to parse content from response';
+                    
+                    // Smooth scroll to results
+                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else if (data.error) {
+                    // Show error message
+                    document.getElementById('errorText').textContent = data.error;
                     errorDiv.style.display = 'block';
+                    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
                 
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('errorText').textContent = 'Network error. Please try again.';
-                errorDiv.style.display = 'block';
-            } finally {
                 loadingDiv.style.display = 'none';
+                document.getElementById('errorText').textContent = 'Network error. Please check your connection and try again.';
+                errorDiv.style.display = 'block';
+                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         });
     </script>
