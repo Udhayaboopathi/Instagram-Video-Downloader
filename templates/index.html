@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Video Downloader</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .instagram-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .form-container {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #fee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #c62828;
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        .success-section {
+            background: #f0f7ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .video-container {
+            margin-bottom: 20px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: block;
+            background: #f0f0f0;
+            min-height: 300px;
+            object-fit: cover;
+        }
+
+        .carousel-item img,
+        .carousel-item video {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: block;
+            background: #f0f0f0;
+            min-height: 300px;
+            object-fit: cover;
+        }
+
+        .btn-download {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-section ul {
+            color: #666;
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+
+        .info-section li {
+            margin-bottom: 5px;
+        }
+
+        .example-link {
+            color: #667eea;
+            font-size: 0.85rem;
+            font-style: italic;
+            display: block;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .instagram-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="instagram-icon">📸</div>
+            <h1>Instagram Downloader</h1>
+            <p>Download Instagram Reels, Videos, Images & More</p>
+        </div>
+
+        <!-- Error Message Section -->
+        {% if error %}
+            <div class="error-message">
+                <strong>❌ Error:</strong><br>
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Form Section -->
+        <div class="form-container">
+            <form action="/download" method="POST" id="downloadForm">
+                <div class="input-group">
+                    <label for="instagram_url">Instagram Video URL</label>
+                    <input 
+                        type="text" 
+                        id="instagram_url" 
+                        name="instagram_url" 
+                        placeholder="https://www.instagram.com/reel/DK598n8Cl3M/" 
+                        required
+                    >
+                    <span class="example-link">💡 Best: https://www.instagram.com/reel/DRUlgOiia8O/ (Reels work best!)</span>
+                </div>
+                <button type="submit" class="btn-submit">🔍 Fetch Content</button>
+            </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #667eea;">Fetching content...</p>
+        </div>
+
+        <!-- Success Section - Video Player and Download Button -->
+        {% if content %}
+            <div class="success-section">
+                <!-- Quality Badge -->
+                <div style="display: inline-block; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; margin-bottom: 15px;">
+                    ✨ Full HD Quality
+                </div>
+
+                <!-- Single Video -->
+                {% if content.type == 'video' and content.video_url %}
+                    <div class="video-container">
+                        <video controls autoplay>
+                            <source src="{{ content.video_url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <a href="{{ content.video_url }}" download="instagram_video.mp4" target="_blank" class="btn-download">
+                        ⬇️ Download Video
+                    </a>
+                {% endif %}
+
+                <!-- Single Image -->
+                {% if content.type == 'image' and content.images %}
+                    <div class="image-container">
+                        <img src="{{ content.images[0].url }}" alt="Instagram Post" crossorigin="anonymous">
+                    </div>
+                    <a href="{{ content.images[0].url }}" download="instagram_image.jpg" target="_blank" class="btn-download" style="margin-top: 15px; display: inline-block;">
+                        ⬇️ Download Image
+                    </a>
+                {% endif %}
+
+                <!-- Carousel (Multiple Images/Videos) -->
+                {% if content.type == 'carousel' and content.images %}
+                    <div class="carousel-container">
+                        {% for item in content.images %}
+                            {% if item.type == 'video' %}
+                                <div class="carousel-item" style="margin-bottom: 20px;">
+                                    <video controls crossorigin="anonymous">
+                                        <source src="{{ item.url }}" type="video/mp4">
+                                    </video>
+                                    <a href="{{ item.url }}" download="instagram_video_{{ loop.index }}.mp4" target="_blank" class="btn-download" style="margin-top: 10px; display: inline-block;">
+                                        ⬇️ Download Video {{ loop.index }}
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="carousel-item" style="margin-bottom: 20px;">
+                                    <img src="{{ item.url }}" alt="Image {{ loop.index }}" crossorigin="anonymous">
+                                    <a href="{{ item.url }}" download="instagram_image_{{ loop.index }}.jpg" target="_blank" class="btn-download" style="margin-top: 10px; display: inline-block;">
+                                        ⬇️ Download Image {{ loop.index }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Caption -->
+                {% if content.caption %}
+                    <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                        <strong>📝 Caption:</strong>
+                        <p style="margin-top: 8px; color: #666;">{{ content.caption }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Information Section -->
+        <div class="info-section">
+            <h3>ℹ️ How to Use:</h3>
+            <ul>
+                <li>Copy any Instagram Reel, Post, or Video URL</li>
+                <li>Paste it in the input field above</li>
+                <li>Click "Fetch Content" to load it</li>
+                <li>Download in <strong>Full HD quality</strong> 🎬</li>
+            </ul>
+        </div>
+
+        <div class="info-section" style="margin-top: 15px;">
+            <h3>✨ Supported Content:</h3>
+            <ul>
+                <li>📹 <strong>Reels</strong> (Works Best! ⭐ Full HD)</li>
+                <li>🎥 Video Posts (Full HD Quality)</li>
+                <li>📸 Image Posts (Original Quality)</li>
+                <li>🎠 Carousel Posts (All in Full HD)</li>
+                <li>⚠️ Only public accounts supported</li>
+            </ul>
+        </div>
+
+        <div class="info-section" style="margin-top: 15px; background: #fff3cd; border-left-color: #ffc107;">
+            <h3>💡 Pro Tip:</h3>
+            <ul>
+                <li><strong>Reels work much better than regular posts!</strong></li>
+                <li>If you get rate limit errors, wait a few minutes</li>
+                <li>Instagram may block repeated requests</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Show loading spinner on form submit
+        document.getElementById('downloadForm').addEventListener('submit', function() {
+            document.getElementById('loading').style.display = 'block';
+        });
+
+        // Add error handling for images
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.image-container img, .carousel-item img');
+            images.forEach(img => {
+                img.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    const errorMsg = document.createElement('div');
+                    errorMsg.style.cssText = 'padding: 20px; background: #fee; color: #c62828; border-radius: 10px; text-align: center;';
+                    errorMsg.textContent = '⚠️ Image failed to load. Click download button to save it directly.';
+                    this.parentElement.insertBefore(errorMsg, this);
+                });
+            });
+
+            // Handle download button clicks to prevent navigation
+            const downloadButtons = document.querySelectorAll('.btn-download');
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('href');
+                    const filename = this.getAttribute('download');
+                    
+                    // Create a temporary link to trigger download
+                    fetch(url)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = blobUrl;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(blobUrl);
+                            document.body.removeChild(a);
+                        })
+                        .catch(() => {
+                            // Fallback: open in new tab if fetch fails (CORS issue)
+                            window.open(url, '_blank');
+                        });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

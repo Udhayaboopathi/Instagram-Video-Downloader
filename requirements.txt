@@ -1,0 +1,6 @@
+fastapi==0.121.3
+uvicorn[standard]==0.34.0
+igbyte==0.1.1
+instaloader==4.15
+jinja2==3.1.5
+python-multipart==0.0.20
