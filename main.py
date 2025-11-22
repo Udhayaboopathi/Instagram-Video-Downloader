@@ -7,6 +7,8 @@ import instaloader
 import re
 import json
 import os
+import requests
+import time
 from pathlib import Path
 
 app = FastAPI(title="Instagram Video Downloader")
@@ -35,30 +37,75 @@ def extract_shortcode(url: str) -> str:
 def download_instagram_content(url: str):
     """Download any Instagram content (posts, reels, videos, images, music)"""
     try:
-        # First try igbyte for reels (faster and more reliable)
-        if '/reel/' in url or '/reels/' in url:
-            try:
-                print("Trying igbyte for reel...")
-                reel_data_raw = download_reel(url)
-                if isinstance(reel_data_raw, str):
-                    reel_data = json.loads(reel_data_raw)
-                else:
-                    reel_data = reel_data_raw
-                
-                if reel_data and reel_data.get('reel_download_link'):
-                    print("Successfully got reel from igbyte")
-                    return {
-                        'video_url': reel_data.get('reel_download_link'),
-                        'thumbnail_url': None,
-                        'type': 'video',
-                        'caption': reel_data.get('caption', ''),
-                        'images': []
-                    }
-            except Exception as e:
-                print(f"igbyte failed: {e}")
+        # First try igbyte for all content types (most reliable)
+        try:
+            print("Trying igbyte...")
+            reel_data_raw = download_reel(url)
+            if isinstance(reel_data_raw, str):
+                reel_data = json.loads(reel_data_raw)
+            else:
+                reel_data = reel_data_raw
+            
+            if reel_data and reel_data.get('reel_download_link'):
+                print("Successfully got content from igbyte")
+                return {
+                    'video_url': reel_data.get('reel_download_link'),
+                    'thumbnail_url': None,
+                    'type': 'video',
+                    'caption': reel_data.get('caption', ''),
+                    'images': []
+                }
+        except Exception as e:
+            print(f"igbyte failed: {e}")
         
-        # Use instaloader for all content types
-        print("Trying instaloader...")
+        # Fallback: Try web scraping method
+        print("Trying web scraping fallback...")
+        try:
+            shortcode = extract_shortcode(url)
+            if shortcode:
+                embed_url = f"https://www.instagram.com/p/{shortcode}/embed/captioned/"
+                
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Referer': 'https://www.instagram.com/',
+                }
+                
+                response = requests.get(embed_url, headers=headers, timeout=10)
+                if response.status_code == 200:
+                    content = response.text
+                    
+                    # Try to extract video URL
+                    video_match = re.search(r'"video_url":"([^"]+)"', content)
+                    if video_match:
+                        video_url = video_match.group(1).replace('\\u0026', '&')
+                        print(f"Found video via web scraping: {video_url}")
+                        return {
+                            'video_url': video_url,
+                            'thumbnail_url': None,
+                            'type': 'video',
+                            'caption': '',
+                            'images': []
+                        }
+                    
+                    # Try to extract image URL
+                    image_match = re.search(r'"display_url":"([^"]+)"', content)
+                    if image_match:
+                        image_url = image_match.group(1).replace('\\u0026', '&')
+                        print(f"Found image via web scraping: {image_url}")
+                        return {
+                            'video_url': None,
+                            'thumbnail_url': image_url,
+                            'type': 'image',
+                            'caption': '',
+                            'images': [{'type': 'image', 'url': image_url, 'thumbnail': image_url}]
+                        }
+        except Exception as e:
+            print(f"Web scraping failed: {e}")
+        
+        # Last resort: Use instaloader with better session handling
+        print("Trying instaloader with session...")
         loader = instaloader.Instaloader(
             download_videos=True,
             download_video_thumbnails=False,
@@ -66,13 +113,16 @@ def download_instagram_content(url: str):
             download_comments=False,
             save_metadata=False,
             compress_json=False,
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            max_connection_attempts=3,
-            request_timeout=10
+            user_agent='Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+            max_connection_attempts=1,
+            request_timeout=15
         )
         
         # Disable rate limiting warnings
         loader.context.quiet = True
+        
+        # Add delay to avoid rate limiting
+        time.sleep(1)
         
         shortcode = extract_shortcode(url)
         if not shortcode:
@@ -131,14 +181,20 @@ def download_instagram_content(url: str):
         return result
         
     except instaloader.exceptions.InstaloaderException as e:
-        if "403" in str(e) or "Forbidden" in str(e):
-            raise Exception("Instagram is blocking requests. This content might be private or Instagram is rate limiting. Please try again later.")
-        elif "404" in str(e) or "not found" in str(e).lower():
-            raise Exception("Post not found. The post may have been deleted or the URL is incorrect.")
+        error_msg = str(e)
+        if "403" in error_msg or "Forbidden" in error_msg:
+            raise Exception("⚠️ Instagram is blocking requests.\n\n💡 Solutions:\n• Wait 5-10 minutes and try again\n• Try using a Reel URL (works better!)\n• Make sure the account is public\n• Clear your browser cache")
+        elif "401" in error_msg or "Unauthorized" in error_msg or "wait a few minutes" in error_msg.lower():
+            raise Exception("⏳ Instagram rate limit detected.\n\n✅ What to do:\n• Wait 5-10 minutes before trying again\n• Use Reel URLs - they work much better!\n• Try the same URL later\n\n💡 Tip: Reels download successfully even during rate limits!")
+        elif "404" in error_msg or "not found" in error_msg.lower():
+            raise Exception("❌ Post not found.\n\nPossible reasons:\n• Post was deleted\n• Account is private\n• URL is incorrect\n• Post is not accessible")
         else:
-            raise Exception(f"Instagram error: {str(e)}")
+            raise Exception(f"⚠️ Instagram error.\n\n💡 Try these:\n• Wait a few minutes and retry\n• Use a Reel URL instead\n• Make sure content is public\n\nError: {error_msg[:100]}")
     except Exception as e:
-        raise Exception(f"Failed to download: {str(e)}")
+        error_msg = str(e)
+        if "⚠️" in error_msg or "❌" in error_msg or "⏳" in error_msg:
+            raise  # Re-raise our custom formatted errors
+        raise Exception(f"⚠️ Failed to download.\n\n💡 Suggestions:\n• Try a Reel URL (works best!)\n• Wait a few minutes\n• Ensure content is public\n\nDetails: {error_msg[:150]}")
 
 
 @app.get("/", response_class=HTMLResponse)

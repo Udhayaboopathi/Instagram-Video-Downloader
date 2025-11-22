@@ -2,7 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <title>Instagram Video Downloader</title>
     <link rel="icon" type="image/png" href="/static/logo.png" />
     <style>
@@ -13,7 +22,7 @@
       }
 
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: "Courier New", Courier, monospace;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         display: flex;
@@ -477,6 +486,9 @@
         align-items: center;
         gap: 5px;
         box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        min-height: 36px;
       }
 
       .paste-button:hover {
@@ -486,6 +498,7 @@
 
       .paste-button:active {
         transform: translateY(0);
+        box-shadow: 0 1px 6px rgba(102, 126, 234, 0.4);
       }
 
       .paste-button.success {
@@ -513,6 +526,9 @@
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        min-height: 48px;
       }
 
       .btn-submit:hover {
@@ -522,6 +538,7 @@
 
       .btn-submit:active {
         transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
       }
 
       .btn-submit:disabled {
@@ -591,6 +608,12 @@
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .btn-download:hover {
@@ -600,6 +623,7 @@
 
       .btn-download:active {
         transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(17, 153, 142, 0.5);
       }
 
       .info-section {
@@ -784,12 +808,24 @@
       }
 
       @media (max-width: 600px) {
+        body {
+          font-size: 14px;
+        }
+
         .container {
-          padding: 25px;
+          padding: 20px 15px;
+          margin: 10px;
+          width: calc(100% - 20px);
+          border-radius: 15px;
         }
 
         .header h1 {
-          font-size: 2rem;
+          font-size: 1.8rem;
+          line-height: 1.2;
+        }
+
+        .header p {
+          font-size: 0.9rem;
         }
 
         .instagram-icon {
@@ -797,49 +833,115 @@
         }
 
         .logo-icon-img {
-          width: 40px;
-          height: 40px;
+          width: 35px;
+          height: 35px;
         }
 
         .instagram-icon-img {
-          width: 60px;
-          height: 60px;
+          width: 50px;
+          height: 50px;
         }
 
-        /* Mobile responsive */
+        /* Mobile responsive header */
         .top-header {
-          padding: 12px 15px;
+          padding: 10px 12px;
         }
 
         .header-content {
           flex-direction: column;
           align-items: flex-start;
-          gap: 10px;
+          gap: 8px;
         }
 
         .logo-text h1 {
-          font-size: 1.2rem;
+          font-size: 1rem;
+          line-height: 1.3;
         }
 
         .logo-text p {
-          font-size: 0.7rem;
+          font-size: 0.65rem;
         }
 
         .header-stats {
-          flex-wrap: wrap;
-          gap: 10px;
-          font-size: 0.75rem;
+          width: 100%;
+          justify-content: space-between;
+          gap: 8px;
+          font-size: 0.7rem;
+        }
+
+        .stat-item {
+          font-size: 0.7rem;
         }
 
         .past-button {
           width: 100%;
           justify-content: center;
-          font-size: 0.85rem;
-          padding: 8px 15px;
+          font-size: 0.8rem;
+          padding: 8px 12px;
         }
 
+        /* Form elements */
+        input[type="text"] {
+          font-size: 14px;
+          padding: 12px 55px 12px 12px;
+        }
+
+        .paste-button {
+          padding: 6px 12px;
+          font-size: 0.75rem;
+          right: 8px;
+        }
+
+        .btn-submit {
+          font-size: 1rem;
+          padding: 12px;
+        }
+
+        .btn-download {
+          font-size: 1rem;
+          padding: 12px;
+        }
+
+        /* Content sections */
+        .info-section {
+          padding: 15px;
+          font-size: 0.85rem;
+        }
+
+        .info-section h3 {
+          font-size: 1rem;
+        }
+
+        .info-section ul {
+          font-size: 0.85rem;
+          padding-left: 18px;
+        }
+
+        .example-link {
+          font-size: 0.75rem;
+          word-break: break-all;
+        }
+
+        /* Video and image containers */
+        video,
+        .image-container img,
+        .carousel-item img,
+        .carousel-item video {
+          border-radius: 8px;
+          max-height: 400px;
+        }
+
+        .video-container {
+          margin-bottom: 15px;
+        }
+
+        .success-section {
+          padding: 15px;
+        }
+
+        /* Footer */
         .footer {
-          padding: 20px 15px;
+          padding: 20px 12px;
         }
 
         .footer-top {
@@ -848,48 +950,145 @@
         }
 
         .footer-info h3 {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
 
         .footer-info p {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
+          line-height: 1.5;
         }
 
         .footer-links {
           flex-direction: column;
-          gap: 8px;
+          gap: 6px;
+          width: 100%;
+        }
+
+        .footer-link {
+          font-size: 0.85rem;
+          padding: 6px 8px;
         }
 
         .creator-attribution {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
+          line-height: 1.6;
         }
 
+        .creator-link {
+          padding: 4px 8px;
+        }
+
+        /* Background animations - smaller on mobile */
         .floating-object {
-          font-size: 2rem !important;
+          font-size: 1.5rem !important;
+          opacity: 0.1;
+        }
+
+        /* Error and loading messages */
+        .error-message {
+          font-size: 0.85rem;
+          padding: 12px;
+        }
+
+        .loading {
+          padding: 15px;
+        }
+
+        .spinner {
+          width: 35px;
+          height: 35px;
+        }
+
+        /* Main wrapper padding */
+        .main-wrapper {
+          padding: 20px 10px;
+        }
+
+        /* Caption section */
+        #captionSection {
+          padding: 12px;
+          font-size: 0.85rem;
+        }
+
+        #captionText {
+          font-size: 0.85rem;
+          line-height: 1.5;
+        }
+
+        /* Carousel items spacing */
+        .carousel-item {
+          margin-bottom: 15px !important;
         }
       }
 
       @media (min-width: 601px) and (max-width: 1024px) {
         /* Tablet styles */
+        body {
+          font-size: 15px;
+        }
+
         .container {
-          max-width: 700px;
-          padding: 35px;
+          max-width: 90%;
+          padding: 30px 25px;
+          margin: 15px auto;
+        }
+
+        .header h1 {
+          font-size: 2.2rem;
         }
 
         .header-content {
-          gap: 15px;
+          gap: 12px;
         }
 
         .logo-text h1 {
-          font-size: 1.4rem;
+          font-size: 1.3rem;
+        }
+
+        .logo-text p {
+          font-size: 0.75rem;
         }
 
         .main-wrapper {
-          padding: 30px 20px;
+          padding: 25px 15px;
         }
 
         .footer-info {
           min-width: 300px;
+        }
+
+        .footer-info h3 {
+          font-size: 1.2rem;
+        }
+
+        .footer-info p {
+          font-size: 0.9rem;
+        }
+
+        input[type="text"] {
+          font-size: 15px;
+          padding: 14px 60px 14px 14px;
+        }
+
+        .btn-submit,
+        .btn-download {
+          font-size: 1.05rem;
+          padding: 14px;
+        }
+
+        video,
+        .image-container img,
+        .carousel-item img,
+        .carousel-item video {
+          max-height: 500px;
+        }
+
+        .info-section {
+          padding: 18px;
+        }
+
+        .floating-object {
+          font-size: 2.5rem !important;
         }
       }
 
@@ -1235,12 +1434,18 @@
           const filename = generateFilename("image");
           container.innerHTML = `
                     <div class="image-container">
-                        <img src="${content.images[0].url}" alt="Instagram Post" crossorigin="anonymous">
+                        <img id="preview-img-0" alt="Instagram Post" style="display: block;">
+                        <div class="image-loading" style="padding: 40px; text-align: center; color: #667eea;">
+                            <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                            <p style="margin-top: 15px;">Loading image preview...</p>
+                        </div>
                     </div>
-                    <a href="${content.images[0].url}" download="${filename}" class="btn-download" style="margin-top: 15px; display: inline-block;">
+                    <a href="${content.images[0].url}" download="${filename}" class="btn-download" data-url="${content.images[0].url}" data-filename="${filename}" style="margin-top: 15px; display: inline-block;">
                         ⬇️ Download Image
                     </a>
                 `;
+          // Load image using fetch to bypass some CORS issues
+          loadImagePreview(content.images[0].url, "preview-img-0");
         } else if (
           content.type === "carousel" &&
           content.images &&
@@ -1253,26 +1458,39 @@
               const filename = generateFilename("video", index + 1);
               carouselHTML += `
                             <div class="carousel-item" style="margin-bottom: 20px;">
-                                <video controls crossorigin="anonymous">
+                                <video controls>
                                     <source src="${item.url}" type="video/mp4">
                                 </video>
                                 <a href="${
                                   item.url
-                                }" download="${filename}" class="btn-download" style="margin-top: 10px; display: inline-block;">
+                                }" download="${filename}" class="btn-download" data-url="${
+                item.url
+              }" data-filename="${filename}" style="margin-top: 10px; display: inline-block;">
                                     ⬇️ Download Video ${index + 1}
                                 </a>
                             </div>
                         `;
             } else {
               const filename = generateFilename("image", index + 1);
+              const imgId = `carousel-img-${index}`;
               carouselHTML += `
                             <div class="carousel-item" style="margin-bottom: 20px;">
-                                <img src="${item.url}" alt="Image ${
+                                <img id="${imgId}" alt="Image ${
                 index + 1
-              }" crossorigin="anonymous">
+              }" style="display: block;">
+                                <div class="image-loading-${index}" style="padding: 40px; text-align: center; color: #667eea;">
+                                    <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                                    <p style="margin-top: 15px;">Loading image ${
+                                      index + 1
+                                    }...</p>
+                                </div>
                                 <a href="${
                                   item.url
-                                }" download="${filename}" class="btn-download" style="margin-top: 10px; display: inline-block;">
+                                }" download="${filename}" class="btn-download" data-url="${
+                item.url
+              }" data-filename="${filename}" data-img-url="${
+                item.url
+              }" data-img-id="${imgId}" style="margin-top: 10px; display: inline-block;">
                                     ⬇️ Download Image ${index + 1}
                                 </a>
                             </div>
@@ -1281,6 +1499,16 @@
           });
           carouselHTML += "</div>";
           container.innerHTML = carouselHTML;
+
+          // Load carousel images after rendering
+          if (content.type === "carousel") {
+            content.images.forEach((item, index) => {
+              if (item.type === "image") {
+                const imgId = `carousel-img-${index}`;
+                loadImagePreview(item.url, imgId);
+              }
+            });
+          }
         }
 
         // Show caption if available
@@ -1296,18 +1524,84 @@
         setupImageErrorHandlers();
       }
 
+      // Load image preview using fetch to handle CORS better
+      function loadImagePreview(imageUrl, imgElementId) {
+        const img = document.getElementById(imgElementId);
+        const loadingDiv = img.nextElementSibling;
+
+        // Try direct load first
+        const testImg = new Image();
+        testImg.crossOrigin = "anonymous";
+
+        testImg.onload = function () {
+          img.src = imageUrl;
+          if (loadingDiv) loadingDiv.style.display = "none";
+        };
+
+        testImg.onerror = function () {
+          // Fallback: try without crossOrigin
+          fetch(imageUrl, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+          })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const objectURL = URL.createObjectURL(blob);
+              img.src = objectURL;
+              img.onload = function () {
+                URL.revokeObjectURL(objectURL);
+              };
+              if (loadingDiv) loadingDiv.style.display = "none";
+            })
+            .catch((error) => {
+              console.error("Image load failed:", error);
+              // Last fallback - direct URL without CORS
+              img.src = imageUrl;
+              img.onerror = function () {
+                img.style.display = "none";
+                if (loadingDiv) {
+                  loadingDiv.innerHTML = `
+                  <div style="padding: 20px; background: #ffe6e6; color: #c62828; border-radius: 10px; text-align: center;">
+                    ⚠️ Image preview blocked by Instagram.<br>Click download button to save the image.
+                  </div>
+                `;
+                }
+              };
+              if (loadingDiv) loadingDiv.style.display = "none";
+            });
+        };
+
+        testImg.src = imageUrl;
+      }
+
       // Setup download button handlers
       function setupDownloadHandlers() {
         const downloadButtons = document.querySelectorAll(".btn-download");
         downloadButtons.forEach((button) => {
           button.addEventListener("click", function (e) {
             e.preventDefault();
-            const url = this.getAttribute("href");
-            const filename = this.getAttribute("download");
+            const url =
+              this.getAttribute("data-url") || this.getAttribute("href");
+            const filename =
+              this.getAttribute("data-filename") ||
+              this.getAttribute("download");
 
-            // Create a temporary link to trigger download
-            fetch(url)
-              .then((response) => response.blob())
+            // Show downloading indicator
+            const originalText = this.innerHTML;
+            this.innerHTML = "⏳ Downloading...";
+            this.style.pointerEvents = "none";
+
+            // Try to download directly using fetch and blob
+            fetch(url, {
+              mode: "cors",
+              credentials: "omit",
+            })
+              .then((response) => {
+                if (!response.ok)
+                  throw new Error("Network response was not ok");
+                return response.blob();
+              })
               .then((blob) => {
                 const blobUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -1316,12 +1610,39 @@
                 a.download = filename;
                 document.body.appendChild(a);
                 a.click();
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
+
+                // Cleanup
+                setTimeout(() => {
+                  window.URL.revokeObjectURL(blobUrl);
+                  document.body.removeChild(a);
+                }, 100);
+
+                // Reset button
+                this.innerHTML = "✅ Downloaded!";
+                setTimeout(() => {
+                  this.innerHTML = originalText;
+                  this.style.pointerEvents = "auto";
+                }, 2000);
               })
-              .catch(() => {
-                // Fallback: open in new tab if fetch fails (CORS issue)
-                window.open(url, "_blank");
+              .catch((error) => {
+                console.error("Download error:", error);
+                // Fallback: try direct download with proxy
+                const proxyUrl = url.replace(/^https?:\/\//, "");
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                // Reset button
+                this.innerHTML = "⬇️ Opening...";
+                setTimeout(() => {
+                  this.innerHTML = originalText;
+                  this.style.pointerEvents = "auto";
+                }, 2000);
               });
           });
         });
@@ -1334,13 +1655,21 @@
         );
         images.forEach((img) => {
           img.addEventListener("error", function () {
+            console.log("Image failed to load:", this.src);
             this.style.display = "none";
-            const errorMsg = document.createElement("div");
-            errorMsg.style.cssText =
-              "padding: 20px; background: #fee; color: #c62828; border-radius: 10px; text-align: center;";
-            errorMsg.textContent =
-              "⚠️ Image failed to load. Click download button to save it directly.";
-            this.parentElement.insertBefore(errorMsg, this);
+
+            // Check if error message already exists
+            const existingError =
+              this.parentElement.querySelector(".image-load-error");
+            if (!existingError) {
+              const errorMsg = document.createElement("div");
+              errorMsg.className = "image-load-error";
+              errorMsg.style.cssText =
+                "padding: 20px; background: #ffe6e6; color: #c62828; border-radius: 10px; text-align: center; margin-bottom: 15px; font-family: 'Courier New', monospace;";
+              errorMsg.textContent =
+                "⚠️ Image preview unavailable. Click the download button below to save the image.";
+              this.parentElement.insertBefore(errorMsg, this.nextSibling);
+            }
           });
         });
       }
