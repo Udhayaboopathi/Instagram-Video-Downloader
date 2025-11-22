@@ -1,1276 +1,1404 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Instagram Video Downloader</title>
-    <link rel="icon" type="image/png" href="/static/logo.png">
+    <link rel="icon" type="image/png" href="/static/logo.png" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            position: relative;
-            overflow-x: hidden;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        position: relative;
+        overflow-x: hidden;
+      }
 
-        /* Animated Background Objects */
-        .bg-animation {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
+      /* Animated Background Objects */
+      .bg-animation {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
 
-        .floating-object {
-            position: absolute;
-            opacity: 0.15;
-            animation: float 20s infinite ease-in-out;
-        }
+      .floating-object {
+        position: absolute;
+        opacity: 0.15;
+        animation: float 20s infinite ease-in-out;
+      }
 
-        .floating-object:nth-child(1) {
-            top: 10%;
-            left: 10%;
-            font-size: 3rem;
-            animation-delay: 0s;
-            animation-duration: 25s;
-        }
+      .floating-object:nth-child(1) {
+        top: 10%;
+        left: 10%;
+        font-size: 3rem;
+        animation-delay: 0s;
+        animation-duration: 25s;
+      }
 
-        .floating-object:nth-child(2) {
-            top: 60%;
-            left: 80%;
-            font-size: 4rem;
-            animation-delay: 2s;
-            animation-duration: 30s;
-        }
+      .floating-object:nth-child(2) {
+        top: 60%;
+        left: 80%;
+        font-size: 4rem;
+        animation-delay: 2s;
+        animation-duration: 30s;
+      }
 
-        .floating-object:nth-child(3) {
-            top: 30%;
-            left: 70%;
-            font-size: 2.5rem;
-            animation-delay: 4s;
-            animation-duration: 22s;
-        }
+      .floating-object:nth-child(3) {
+        top: 30%;
+        left: 70%;
+        font-size: 2.5rem;
+        animation-delay: 4s;
+        animation-duration: 22s;
+      }
 
-        .floating-object:nth-child(4) {
-            top: 80%;
-            left: 20%;
-            font-size: 3.5rem;
-            animation-delay: 1s;
-            animation-duration: 28s;
-        }
+      .floating-object:nth-child(4) {
+        top: 80%;
+        left: 20%;
+        font-size: 3.5rem;
+        animation-delay: 1s;
+        animation-duration: 28s;
+      }
 
-        .floating-object:nth-child(5) {
-            top: 45%;
-            left: 5%;
-            font-size: 2rem;
-            animation-delay: 3s;
-            animation-duration: 26s;
-        }
+      .floating-object:nth-child(5) {
+        top: 45%;
+        left: 5%;
+        font-size: 2rem;
+        animation-delay: 3s;
+        animation-duration: 26s;
+      }
 
-        .floating-object:nth-child(6) {
-            top: 20%;
-            left: 40%;
-            font-size: 3rem;
-            animation-delay: 5s;
-            animation-duration: 24s;
-        }
+      .floating-object:nth-child(6) {
+        top: 20%;
+        left: 40%;
+        font-size: 3rem;
+        animation-delay: 5s;
+        animation-duration: 24s;
+      }
 
-        .floating-object:nth-child(7) {
-            top: 70%;
-            left: 60%;
-            font-size: 2.8rem;
-            animation-delay: 2.5s;
-            animation-duration: 27s;
-        }
+      .floating-object:nth-child(7) {
+        top: 70%;
+        left: 60%;
+        font-size: 2.8rem;
+        animation-delay: 2.5s;
+        animation-duration: 27s;
+      }
 
-        .floating-object:nth-child(8) {
-            top: 15%;
-            left: 90%;
-            font-size: 2.2rem;
-            animation-delay: 4.5s;
-            animation-duration: 23s;
-        }
+      .floating-object:nth-child(8) {
+        top: 15%;
+        left: 90%;
+        font-size: 2.2rem;
+        animation-delay: 4.5s;
+        animation-duration: 23s;
+      }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translate(0, 0) rotate(0deg) scale(1);
-            }
-            25% {
-                transform: translate(30px, -50px) rotate(10deg) scale(1.1);
-            }
-            50% {
-                transform: translate(-20px, -80px) rotate(-5deg) scale(0.9);
-            }
-            75% {
-                transform: translate(40px, -40px) rotate(15deg) scale(1.05);
-            }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg) scale(1);
         }
-
-        /* Header Styles */
-        .top-header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            animation: slideDown 0.6s ease-out;
-            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        25% {
+          transform: translate(30px, -50px) rotate(10deg) scale(1.1);
         }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        50% {
+          transform: translate(-20px, -80px) rotate(-5deg) scale(0.9);
         }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+        75% {
+          transform: translate(40px, -40px) rotate(15deg) scale(1.05);
         }
+      }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+      /* Header Styles */
+      .top-header {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        padding: 15px 30px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        animation: slideDown 0.6s ease-out;
+        border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
         }
-
-        .logo-icon {
-            font-size: 2rem;
-            animation: pulse 2s infinite;
+        to {
+          transform: translateY(0);
+          opacity: 1;
         }
+      }
 
-        .logo-icon-img {
-            width: 50px;
-            height: 50px;
-            animation: pulse 2s infinite;
-            border-radius: 10px;
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        font-size: 2rem;
+        animation: pulse 2s infinite;
+      }
+
+      .logo-icon-img {
+        width: 50px;
+        height: 50px;
+        animation: pulse 2s infinite;
+        border-radius: 10px;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
         }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+        50% {
+          transform: scale(1.1);
         }
+      }
 
-        .logo-text h1 {
-            font-size: 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
+      .logo-text h1 {
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+      }
+
+      .logo-text p {
+        font-size: 0.75rem;
+        color: #666;
+        margin: 0;
+      }
+
+      .header-stats {
+        display: flex;
+        gap: 20px;
+        font-size: 0.85rem;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #666;
+      }
+
+      .stat-item .icon {
+        font-size: 1.2rem;
+      }
+
+      /* Past Button Styles */
+      .past-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+
+      .past-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+      }
+
+      .past-button:active {
+        transform: translateY(0);
+      }
+
+      /* Footer Styles */
+      .footer {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        padding: 30px 20px;
+        box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 100;
+        border-top: 2px solid rgba(102, 126, 234, 0.1);
+        margin-top: auto;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .footer-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .footer-info {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .footer-info h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+      }
+
+      .footer-info p {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .footer-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+
+      .footer-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(3px);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .creator-attribution {
+        font-size: 1rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .creator-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.1) 100%
+        );
+      }
+
+      .creator-link:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.2) 0%,
+          rgba(118, 75, 162, 0.2) 100%
+        );
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .creator-icon {
+        animation: heartbeat 1.5s infinite;
+      }
+
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
         }
-
-        .logo-text p {
-            font-size: 0.75rem;
-            color: #666;
-            margin: 0;
+        25% {
+          transform: scale(1.2);
         }
-
-        .header-stats {
-            display: flex;
-            gap: 20px;
-            font-size: 0.85rem;
+        50% {
+          transform: scale(1);
         }
+      }
 
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #666;
+      /* Main Content Wrapper */
+      .main-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        max-width: 650px;
+        width: 100%;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
         }
-
-        .stat-item .icon {
-            font-size: 1.2rem;
+        to {
+          transform: translateY(0);
+          opacity: 1;
         }
+      }
 
-        /* Past Button Styles */
-        .past-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        color: #333;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        color: #666;
+        font-size: 1rem;
+      }
+
+      .instagram-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .instagram-icon-img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+        animation: pulse 2s infinite;
+        border-radius: 15px;
+      }
+
+      .form-container {
+        margin-bottom: 30px;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+      }
+
+      .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 15px 60px 15px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .paste-button {
+        position: absolute;
+        right: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      }
+
+      .paste-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+      }
+
+      .paste-button:active {
+        transform: translateY(0);
+      }
+
+      .paste-button.success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      }
+
+      input[type="text"]:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      input[type="text"]::placeholder {
+        color: #aaa;
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      }
+
+      .btn-submit:active {
+        transform: translateY(0);
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .error-message {
+        background: #fee;
+        border-left: 4px solid #f44336;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        color: #c62828;
+        font-size: 0.95rem;
+        white-space: pre-line;
+      }
+
+      .success-section {
+        background: #f0f7ff;
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+      }
+
+      .video-container {
+        margin-bottom: 20px;
+      }
+
+      video {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .image-container img {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: block;
+        background: #f0f0f0;
+        min-height: 300px;
+        object-fit: cover;
+      }
+
+      .carousel-item img,
+      .carousel-item video {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: block;
+        background: #f0f0f0;
+        min-height: 300px;
+        object-fit: cover;
+      }
+
+      .btn-download {
+        display: inline-block;
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+      }
+
+      .btn-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
+      }
+
+      .btn-download:active {
+        transform: translateY(0);
+      }
+
+      .info-section {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+      }
+
+      .info-section h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .info-section ul {
+        color: #666;
+        padding-left: 20px;
+        line-height: 1.8;
+      }
+
+      .info-section li {
+        margin-bottom: 5px;
+      }
+
+      .example-link {
+        color: #667eea;
+        font-size: 0.85rem;
+        font-style: italic;
+        display: block;
+        margin-top: 5px;
+      }
+
+      /* Past Button Styles */
+      .past-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+
+      .past-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+      }
+
+      .past-button:active {
+        transform: translateY(0);
+      }
+
+      /* Footer Styles */
+      .footer {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        padding: 30px 20px;
+        box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 100;
+        border-top: 2px solid rgba(102, 126, 234, 0.1);
+        margin-top: auto;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .footer-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .footer-info {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .footer-info h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+      }
+
+      .footer-info p {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .footer-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+
+      .footer-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(3px);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .creator-attribution {
+        font-size: 1rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .creator-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.1) 100%
+        );
+      }
+
+      .creator-link:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.2) 0%,
+          rgba(118, 75, 162, 0.2) 100%
+        );
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .creator-icon {
+        animation: heartbeat 1.5s infinite;
+      }
+
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
         }
-
-        .past-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        25% {
+          transform: scale(1.2);
         }
-
-        .past-button:active {
-            transform: translateY(0);
+        50% {
+          transform: scale(1);
         }
+      }
 
-        /* Footer Styles */
-        .footer {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 30px 20px;
-            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 100;
-            border-top: 2px solid rgba(102, 126, 234, 0.1);
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-info {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-info h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .footer-info p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .footer-link:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateX(3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .creator-attribution {
-            font-size: 1rem;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .creator-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 5px 10px;
-            border-radius: 5px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        }
-
-        .creator-link:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .creator-icon {
-            animation: heartbeat 1.5s infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            25% {
-                transform: scale(1.2);
-            }
-            50% {
-                transform: scale(1);
-            }
-        }
-
-        /* Main Content Wrapper */
-        .main-wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
+      @media (max-width: 600px) {
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 650px;
-            width: 100%;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+          padding: 25px;
         }
 
         .header h1 {
-            color: #333;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1rem;
+          font-size: 2rem;
         }
 
         .instagram-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+          font-size: 2.5rem;
+        }
+
+        .logo-icon-img {
+          width: 40px;
+          height: 40px;
         }
 
         .instagram-icon-img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            animation: pulse 2s infinite;
-            border-radius: 15px;
+          width: 60px;
+          height: 60px;
         }
 
-        .form-container {
-            margin-bottom: 30px;
+        /* Mobile responsive */
+        .top-header {
+          padding: 12px 15px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
         }
 
-        label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
+        .logo-text h1 {
+          font-size: 1.2rem;
         }
 
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
+        .logo-text p {
+          font-size: 0.7rem;
         }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 15px 60px 15px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
+        .header-stats {
+          flex-wrap: wrap;
+          gap: 10px;
+          font-size: 0.75rem;
         }
 
-        .paste-button {
-            position: absolute;
-            right: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .paste-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
-        }
-
-        .paste-button:active {
-            transform: translateY(0);
-        }
-
-        .paste-button.success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        input[type="text"]:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        input[type="text"]::placeholder {
-            color: #aaa;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            background: #fee;
-            border-left: 4px solid #f44336;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #c62828;
-            font-size: 0.95rem;
-            white-space: pre-line;
-        }
-
-        .success-section {
-            background: #f0f7ff;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-        }
-
-        .video-container {
-            margin-bottom: 20px;
-        }
-
-        video {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .image-container img {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            display: block;
-            background: #f0f0f0;
-            min-height: 300px;
-            object-fit: cover;
-        }
-
-        .carousel-item img,
-        .carousel-item video {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            display: block;
-            background: #f0f0f0;
-            min-height: 300px;
-            object-fit: cover;
-        }
-
-        .btn-download {
-            display: inline-block;
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-            text-decoration: none;
-            text-align: center;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
-        }
-
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
-        }
-
-        .btn-download:active {
-            transform: translateY(0);
-        }
-
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .info-section h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .info-section ul {
-            color: #666;
-            padding-left: 20px;
-            line-height: 1.8;
-        }
-
-        .info-section li {
-            margin-bottom: 5px;
-        }
-
-        .example-link {
-            color: #667eea;
-            font-size: 0.85rem;
-            font-style: italic;
-            display: block;
-            margin-top: 5px;
-        }
-
-        /* Past Button Styles */
         .past-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
+          width: 100%;
+          justify-content: center;
+          font-size: 0.85rem;
+          padding: 8px 15px;
         }
 
-        .past-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .past-button:active {
-            transform: translateY(0);
-        }
-
-        /* Footer Styles */
         .footer {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 30px 20px;
-            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 100;
-            border-top: 2px solid rgba(102, 126, 234, 0.1);
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+          padding: 20px 15px;
         }
 
         .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-info {
-            flex: 1;
-            min-width: 250px;
+          flex-direction: column;
+          align-items: flex-start;
         }
 
         .footer-info h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
+          font-size: 1.1rem;
         }
 
         .footer-info p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.6;
+          font-size: 0.85rem;
         }
 
         .footer-links {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .footer-link:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateX(3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
+          flex-direction: column;
+          gap: 8px;
         }
 
         .creator-attribution {
-            font-size: 1rem;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
+          font-size: 0.9rem;
         }
 
-        .creator-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 5px 10px;
-            border-radius: 5px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        .floating-object {
+          font-size: 2rem !important;
+        }
+      }
+
+      @media (min-width: 601px) and (max-width: 1024px) {
+        /* Tablet styles */
+        .container {
+          max-width: 700px;
+          padding: 35px;
         }
 
-        .creator-link:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        .header-content {
+          gap: 15px;
         }
 
-        .creator-icon {
-            animation: heartbeat 1.5s infinite;
+        .logo-text h1 {
+          font-size: 1.4rem;
         }
 
-        @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            25% {
-                transform: scale(1.2);
-            }
-            50% {
-                transform: scale(1);
-            }
+        .main-wrapper {
+          padding: 30px 20px;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-            }
+        .footer-info {
+          min-width: 300px;
+        }
+      }
 
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .instagram-icon {
-                font-size: 2.5rem;
-            }
-
-            .logo-icon-img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .instagram-icon-img {
-                width: 60px;
-                height: 60px;
-            }
-
-            /* Mobile responsive */
-            .top-header {
-                padding: 12px 15px;
-            }
-
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .logo-text h1 {
-                font-size: 1.2rem;
-            }
-
-            .logo-text p {
-                font-size: 0.7rem;
-            }
-
-            .header-stats {
-                flex-wrap: wrap;
-                gap: 10px;
-                font-size: 0.75rem;
-            }
-
-            .past-button {
-                width: 100%;
-                justify-content: center;
-                font-size: 0.85rem;
-                padding: 8px 15px;
-            }
-
-            .footer {
-                padding: 20px 15px;
-            }
-
-            .footer-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .footer-info h3 {
-                font-size: 1.1rem;
-            }
-
-            .footer-info p {
-                font-size: 0.85rem;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .creator-attribution {
-                font-size: 0.9rem;
-            }
-
-            .floating-object {
-                font-size: 2rem !important;
-            }
+      @media (min-width: 1025px) {
+        /* Desktop styles */
+        .container {
+          max-width: 750px;
         }
 
-        @media (min-width: 601px) and (max-width: 1024px) {
-            /* Tablet styles */
-            .container {
-                max-width: 700px;
-                padding: 35px;
-            }
-
-            .header-content {
-                gap: 15px;
-            }
-
-            .logo-text h1 {
-                font-size: 1.4rem;
-            }
-
-            .main-wrapper {
-                padding: 30px 20px;
-            }
-
-            .footer-info {
-                min-width: 300px;
-            }
+        .header-content {
+          padding: 0 20px;
         }
 
-        @media (min-width: 1025px) {
-            /* Desktop styles */
-            .container {
-                max-width: 750px;
-            }
-
-            .header-content {
-                padding: 0 20px;
-            }
-
-            .footer-content {
-                padding: 0 40px;
-            }
+        .footer-content {
+          padding: 0 40px;
         }
+      }
 
-        /* Smooth scroll behavior */
-        html {
-            scroll-behavior: smooth;
-        }
+      /* Smooth scroll behavior */
+      html {
+        scroll-behavior: smooth;
+      }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
 
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Animated Background Objects -->
     <div class="bg-animation">
-        <div class="floating-object">📹</div>
-        <div class="floating-object">📸</div>
-        <div class="floating-object">🎥</div>
-        <div class="floating-object">📱</div>
-        <div class="floating-object">🎬</div>
-        <div class="floating-object">💫</div>
-        <div class="floating-object">✨</div>
-        <div class="floating-object">🌟</div>
+      <div class="floating-object">📹</div>
+      <div class="floating-object">📸</div>
+      <div class="floating-object">🎥</div>
+      <div class="floating-object">📱</div>
+      <div class="floating-object">🎬</div>
+      <div class="floating-object">💫</div>
+      <div class="floating-object">✨</div>
+      <div class="floating-object">🌟</div>
     </div>
 
     <!-- Header Section -->
     <header class="top-header">
-        <div class="header-content">
-            <div class="logo-section">
-                <img src="/static/logo.png" alt="Logo" class="logo-icon-img">
-                <div class="logo-text">
-                    <h1>Insta Downloader</h1>
-                    <p>Fast & Free Instagram Content Downloader</p>
-                </div>
-            </div>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <span class="icon">🎬</span>
-                    <span>Full HD Quality</span>
-                </div>
-                <div class="stat-item">
-                    <span class="icon">⚡</span>
- <a href="https://github.com/Udhayaboopathi/Instagram-Video-Downloader" class="footer-link" target="_blank">GitHub</a>
-                </div>
-            </div>
-
+      <div class="header-content">
+        <div class="logo-section">
+          <img src="/static/logo.png" alt="Logo" class="logo-icon-img" />
+          <div class="logo-text">
+            <h1>Insta Downloader</h1>
+            <p>Fast & Free Instagram Content Downloader</p>
+          </div>
         </div>
+        <div class="header-stats">
+          <div class="stat-item">
+            <span class="icon">🎬</span>
+            <span>Full HD Quality</span>
+          </div>
+          <div class="stat-item">
+            <span class="icon">⚡</span>
+            <a
+              href="https://github.com/Udhayaboopathi/Instagram-Video-Downloader"
+              class="footer-link"
+              target="_blank"
+              >GitHub</a
+            >
+          </div>
+        </div>
+      </div>
     </header>
 
     <!-- Main Content Wrapper -->
     <div class="main-wrapper">
-        <div class="container">
-            <div class="header">
-                <img src="/static/logo.png" alt="Instagram Downloader" class="instagram-icon-img">
-                <h1>Instagram Downloader</h1>
-                <p>Download Instagram Reels, Videos, Images & More</p>
-            </div>
+      <div class="container">
+        <div class="header">
+          <img
+            src="/static/logo.png"
+            alt="Instagram Downloader"
+            class="instagram-icon-img"
+          />
+          <h1>Instagram Downloader</h1>
+          <p>Download Instagram Reels, Videos, Images & More</p>
+        </div>
 
         <!-- Error Message Section -->
-        <div class="error-message" id="errorMessage" style="display: none;">
-            <strong>❌ Error:</strong><br>
-            <span id="errorText"></span>
+        <div class="error-message" id="errorMessage" style="display: none">
+          <strong>❌ Error:</strong><br />
+          <span id="errorText"></span>
         </div>
 
         <!-- Form Section -->
         <div class="form-container">
-            <form id="downloadForm">
-                <div class="input-group">
-                    <label for="instagram_url">Instagram Video URL</label>
-                    <div class="input-wrapper">
-                        <input 
-                            type="text" 
-                            id="instagram_url" 
-                            name="instagram_url" 
-                            placeholder="https://www.instagram.com/reel/DK598n8Cl3M/" 
-                            required
-                        >
-                        <button type="button" class="paste-button" id="pasteBtn" onclick="pasteFromClipboard()">
-                            <span>📋</span>
-                            <span>Paste</span>
-                        </button>
-                    </div>
-                    <span class="example-link">💡 Best: https://www.instagram.com/reel/DRUlgOiia8O/ (Reels work best!)</span>
-                </div>
-                <button type="submit" class="btn-submit">🔍 Fetch Content</button>
-            </form>
+          <form id="downloadForm">
+            <div class="input-group">
+              <label for="instagram_url">Instagram Video URL</label>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  id="instagram_url"
+                  name="instagram_url"
+                  placeholder="https://www.instagram.com/reel/DK598n8Cl3M/"
+                  required
+                />
+                <button
+                  type="button"
+                  class="paste-button"
+                  id="pasteBtn"
+                  onclick="pasteFromClipboard()"
+                >
+                  <span>📋</span>
+                  <span>Paste</span>
+                </button>
+              </div>
+              <span class="example-link"
+                >💡 Best: https://www.instagram.com/reel/DRUlgOiia8O/ (Reels
+                work best!)</span
+              >
+            </div>
+            <button type="submit" class="btn-submit">🔍 Fetch Content</button>
+          </form>
         </div>
 
         <!-- Loading Spinner -->
         <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 10px; color: #667eea;">Fetching content...</p>
+          <div class="spinner"></div>
+          <p style="margin-top: 10px; color: #667eea">Fetching content...</p>
         </div>
 
         <!-- Success Section - Video Player and Download Button -->
-        <div class="success-section" id="successSection" style="display: none;">
-            <!-- Quality Badge -->
-            <div style="display: inline-block; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; margin-bottom: 15px;">
-                ✨ Full HD Quality
-            </div>
-            
-            <!-- Dynamic content will be inserted here -->
-            <div id="contentContainer"></div>
+        <div class="success-section" id="successSection" style="display: none">
+          <!-- Quality Badge -->
+          <div
+            style="
+              display: inline-block;
+              background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+              color: white;
+              padding: 8px 16px;
+              border-radius: 20px;
+              font-size: 0.9rem;
+              font-weight: 600;
+              margin-bottom: 15px;
+            "
+          >
+            ✨ Full HD Quality
+          </div>
 
-            <!-- Caption Section -->
-            <div id="captionSection" style="display: none; margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                <strong>📝 Caption:</strong>
-                <p id="captionText" style="margin-top: 8px; color: #666;"></p>
-            </div>
+          <!-- Dynamic content will be inserted here -->
+          <div id="contentContainer"></div>
+
+          <!-- Caption Section -->
+          <div
+            id="captionSection"
+            style="
+              display: none;
+              margin-top: 20px;
+              padding: 15px;
+              background: #f9f9f9;
+              border-radius: 8px;
+            "
+          >
+            <strong>📝 Caption:</strong>
+            <p id="captionText" style="margin-top: 8px; color: #666"></p>
+          </div>
         </div>
 
         <!-- Information Section -->
         <div class="info-section">
-            <h3>ℹ️ How to Use:</h3>
-            <ul>
-                <li>Copy any Instagram Reel, Post, or Video URL</li>
-                <li>Paste it in the input field above</li>
-                <li>Click "Fetch Content" to load it</li>
-                <li>Download in <strong>Full HD quality</strong> 🎬</li>
-            </ul>
+          <h3>ℹ️ How to Use:</h3>
+          <ul>
+            <li>Copy any Instagram Reel, Post, or Video URL</li>
+            <li>Paste it in the input field above</li>
+            <li>Click "Fetch Content" to load it</li>
+            <li>Download in <strong>Full HD quality</strong> 🎬</li>
+          </ul>
         </div>
 
-        <div class="info-section" style="margin-top: 15px;">
-            <h3>✨ Supported Content:</h3>
-            <ul>
-                <li>📹 <strong>Reels</strong> (Works Best! ⭐ Full HD)</li>
-                <li>🎥 Video Posts (Full HD Quality)</li>
-                <li>📸 Image Posts (Original Quality)</li>
-                <li>🎠 Carousel Posts (All in Full HD)</li>
-                <li>⚠️ Only public accounts supported</li>
-            </ul>
+        <div class="info-section" style="margin-top: 15px">
+          <h3>✨ Supported Content:</h3>
+          <ul>
+            <li>📹 <strong>Reels</strong> (Works Best! ⭐ Full HD)</li>
+            <li>🎥 Video Posts (Full HD Quality)</li>
+            <li>📸 Image Posts (Original Quality)</li>
+            <li>🎠 Carousel Posts (All in Full HD)</li>
+            <li>⚠️ Only public accounts supported</li>
+          </ul>
         </div>
 
-        <div class="info-section" style="margin-top: 15px; background: #fff3cd; border-left-color: #ffc107;">
-            <h3>💡 Pro Tip:</h3>
-            <ul>
-                <li><strong>Reels work much better than regular posts!</strong></li>
-                <li>If you get rate limit errors, wait a few minutes</li>
-                <li>Instagram may block repeated requests</li>
-            </ul>
+        <div
+          class="info-section"
+          style="
+            margin-top: 15px;
+            background: #fff3cd;
+            border-left-color: #ffc107;
+          "
+        >
+          <h3>💡 Pro Tip:</h3>
+          <ul>
+            <li><strong>Reels work much better than regular posts!</strong></li>
+            <li>If you get rate limit errors, wait a few minutes</li>
+            <li>Instagram may block repeated requests</li>
+          </ul>
         </div>
-    </div>
+      </div>
     </div>
 
     <!-- Footer Section -->
     <footer class="footer" id="history-section">
-        <div class="footer-content">
-            <div class="footer-top">
-                <div class="footer-info">
-                    <h3>📱 Instagram Downloader</h3>
-                    <p>A professional Instagram content downloader that works seamlessly across all devices. Download Reels, Videos, Images, and Carousels in Full HD quality - completely free!</p>
-                </div>
-
-            </div>
-            <div class="footer-bottom">
-                <div class="creator-attribution">
-                    <span>Made with</span>
-                    <span class="creator-icon">❤️</span>
-                    <span>by</span>
-                    <a href="https://udhayaboopathi.me" target="_blank" rel="noopener noreferrer" class="creator-link">
-                        Udhayaboopathi
-                    </a>
-                    <span>© 2025</span>
-                </div>
-            </div>
+      <div class="footer-content">
+        <div class="footer-top">
+          <div class="footer-info">
+            <h3>📱 Instagram Downloader</h3>
+            <p>
+              A professional Instagram content downloader that works seamlessly
+              across all devices. Download Reels, Videos, Images, and Carousels
+              in Full HD quality - completely free!
+            </p>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <div class="creator-attribution">
+            <span>Made with</span>
+            <span class="creator-icon">❤️</span>
+            <span>by</span>
+            <a
+              href="https://udhayaboopathi.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="creator-link"
+            >
+              Udhayaboopathi
+            </a>
+            <span>© 2025</span>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <script>
-        // Paste from clipboard function
-        async function pasteFromClipboard() {
-            try {
-                const text = await navigator.clipboard.readText();
-                const inputField = document.getElementById('instagram_url');
-                const pasteBtn = document.getElementById('pasteBtn');
-                
-                if (text) {
-                    inputField.value = text;
-                    inputField.focus();
-                    
-                    // Visual feedback
-                    pasteBtn.classList.add('success');
-                    pasteBtn.innerHTML = '<span>✓</span><span>Pasted</span>';
-                    
-                    setTimeout(() => {
-                        pasteBtn.classList.remove('success');
-                        pasteBtn.innerHTML = '<span>📋</span><span>Paste</span>';
-                    }, 2000);
-                } else {
-                    alert('Clipboard is empty!');
-                }
-            } catch (err) {
-                // Fallback for browsers that don't support clipboard API
-                console.error('Failed to read clipboard:', err);
-                alert('Please grant clipboard permission or paste manually (Ctrl+V / Cmd+V)');
-            }
-        }
+      // Paste from clipboard function
+      async function pasteFromClipboard() {
+        try {
+          const text = await navigator.clipboard.readText();
+          const inputField = document.getElementById("instagram_url");
+          const pasteBtn = document.getElementById("pasteBtn");
 
-        // Scroll to history section (footer)
-        function scrollToHistory() {
-            document.getElementById('history-section').scrollIntoView({ behavior: 'smooth' });
-        }
+          if (text) {
+            inputField.value = text;
+            inputField.focus();
 
-        // Render content dynamically
-        function renderContent(content) {
-            const container = document.getElementById('contentContainer');
-            container.innerHTML = '';
-            
-            if (content.type === 'video' && content.video_url) {
-                // Single Video
-                container.innerHTML = `
+            // Visual feedback
+            pasteBtn.classList.add("success");
+            pasteBtn.innerHTML = "<span>✓</span><span>Pasted</span>";
+
+            setTimeout(() => {
+              pasteBtn.classList.remove("success");
+              pasteBtn.innerHTML = "<span>📋</span><span>Paste</span>";
+            }, 2000);
+          } else {
+            alert("Clipboard is empty!");
+          }
+        } catch (err) {
+          // Fallback for browsers that don't support clipboard API
+          console.error("Failed to read clipboard:", err);
+          alert(
+            "Please grant clipboard permission or paste manually (Ctrl+V / Cmd+V)"
+          );
+        }
+      }
+
+      // Scroll to history section (footer)
+      function scrollToHistory() {
+        document
+          .getElementById("history-section")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Generate filename with current date and time
+      function generateFilename(baseType, index = null) {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const year = now.getFullYear();
+        const hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const hours12 = hours % 12 || 12;
+
+        const timestamp = `${day}:${month}:${year}_${String(hours12).padStart(
+          2,
+          "0"
+        )}:${minutes}:${seconds}:${ampm}`;
+        const extension = baseType.includes("video") ? "mp4" : "jpg";
+        const indexStr = index !== null ? `_${index}` : "";
+
+        return `insta_${baseType}${indexStr}_${timestamp}.${extension}`;
+      }
+
+      // Render content dynamically
+      function renderContent(content) {
+        const container = document.getElementById("contentContainer");
+        container.innerHTML = "";
+
+        if (content.type === "video" && content.video_url) {
+          // Single Video
+          const filename = generateFilename("video");
+          container.innerHTML = `
                     <div class="video-container">
                         <video controls autoplay>
                             <source src="${content.video_url}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
-                    <a href="${content.video_url}" download="instagram_video.mp4" class="btn-download">
+                    <a href="${content.video_url}" download="${filename}" class="btn-download">
                         ⬇️ Download Video
                     </a>
                 `;
-            } else if (content.type === 'image' && content.images && content.images.length > 0) {
-                // Single Image
-                container.innerHTML = `
+        } else if (
+          content.type === "image" &&
+          content.images &&
+          content.images.length > 0
+        ) {
+          // Single Image
+          const filename = generateFilename("image");
+          container.innerHTML = `
                     <div class="image-container">
                         <img src="${content.images[0].url}" alt="Instagram Post" crossorigin="anonymous">
                     </div>
-                    <a href="${content.images[0].url}" download="instagram_image.jpg" class="btn-download" style="margin-top: 15px; display: inline-block;">
+                    <a href="${content.images[0].url}" download="${filename}" class="btn-download" style="margin-top: 15px; display: inline-block;">
                         ⬇️ Download Image
                     </a>
                 `;
-            } else if (content.type === 'carousel' && content.images && content.images.length > 0) {
-                // Carousel
-                let carouselHTML = '<div class="carousel-container">';
-                content.images.forEach((item, index) => {
-                    if (item.type === 'video') {
-                        carouselHTML += `
+        } else if (
+          content.type === "carousel" &&
+          content.images &&
+          content.images.length > 0
+        ) {
+          // Carousel
+          let carouselHTML = '<div class="carousel-container">';
+          content.images.forEach((item, index) => {
+            if (item.type === "video") {
+              const filename = generateFilename("video", index + 1);
+              carouselHTML += `
                             <div class="carousel-item" style="margin-bottom: 20px;">
                                 <video controls crossorigin="anonymous">
                                     <source src="${item.url}" type="video/mp4">
                                 </video>
-                                <a href="${item.url}" download="instagram_video_${index + 1}.mp4" class="btn-download" style="margin-top: 10px; display: inline-block;">
+                                <a href="${
+                                  item.url
+                                }" download="${filename}" class="btn-download" style="margin-top: 10px; display: inline-block;">
                                     ⬇️ Download Video ${index + 1}
                                 </a>
                             </div>
                         `;
-                    } else {
-                        carouselHTML += `
+            } else {
+              const filename = generateFilename("image", index + 1);
+              carouselHTML += `
                             <div class="carousel-item" style="margin-bottom: 20px;">
-                                <img src="${item.url}" alt="Image ${index + 1}" crossorigin="anonymous">
-                                <a href="${item.url}" download="instagram_image_${index + 1}.jpg" class="btn-download" style="margin-top: 10px; display: inline-block;">
+                                <img src="${item.url}" alt="Image ${
+                index + 1
+              }" crossorigin="anonymous">
+                                <a href="${
+                                  item.url
+                                }" download="${filename}" class="btn-download" style="margin-top: 10px; display: inline-block;">
                                     ⬇️ Download Image ${index + 1}
                                 </a>
                             </div>
                         `;
-                    }
-                });
-                carouselHTML += '</div>';
-                container.innerHTML = carouselHTML;
             }
+          });
+          carouselHTML += "</div>";
+          container.innerHTML = carouselHTML;
+        }
 
-            // Show caption if available
-            if (content.caption) {
-                document.getElementById('captionText').textContent = content.caption;
-                document.getElementById('captionSection').style.display = 'block';
-            } else {
-                document.getElementById('captionSection').style.display = 'none';
-            }
-
-            // Setup download button handlers
-            setupDownloadHandlers();
-            setupImageErrorHandlers();
+        // Show caption if available
+        if (content.caption) {
+          document.getElementById("captionText").textContent = content.caption;
+          document.getElementById("captionSection").style.display = "block";
+        } else {
+          document.getElementById("captionSection").style.display = "none";
         }
 
         // Setup download button handlers
-        function setupDownloadHandlers() {
-            const downloadButtons = document.querySelectorAll('.btn-download');
-            downloadButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const url = this.getAttribute('href');
-                    const filename = this.getAttribute('download');
-                    
-                    // Create a temporary link to trigger download
-                    fetch(url)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const blobUrl = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.style.display = 'none';
-                            a.href = blobUrl;
-                            a.download = filename;
-                            document.body.appendChild(a);
-                            a.click();
-                            window.URL.revokeObjectURL(blobUrl);
-                            document.body.removeChild(a);
-                        })
-                        .catch(() => {
-                            // Fallback: open in new tab if fetch fails (CORS issue)
-                            window.open(url, '_blank');
-                        });
-                });
-            });
-        }
+        setupDownloadHandlers();
+        setupImageErrorHandlers();
+      }
 
-        // Setup image error handlers
-        function setupImageErrorHandlers() {
-            const images = document.querySelectorAll('.image-container img, .carousel-item img');
-            images.forEach(img => {
-                img.addEventListener('error', function() {
-                    this.style.display = 'none';
-                    const errorMsg = document.createElement('div');
-                    errorMsg.style.cssText = 'padding: 20px; background: #fee; color: #c62828; border-radius: 10px; text-align: center;';
-                    errorMsg.textContent = '⚠️ Image failed to load. Click download button to save it directly.';
-                    this.parentElement.insertBefore(errorMsg, this);
-                });
-            });
-        }
-
-        // Handle form submission with AJAX (Single Page Experience)
-        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
+      // Setup download button handlers
+      function setupDownloadHandlers() {
+        const downloadButtons = document.querySelectorAll(".btn-download");
+        downloadButtons.forEach((button) => {
+          button.addEventListener("click", function (e) {
             e.preventDefault();
-            
-            const url = document.getElementById('instagram_url').value;
-            const loadingDiv = document.getElementById('loading');
-            const errorDiv = document.getElementById('errorMessage');
-            const successDiv = document.getElementById('successSection');
-            
-            // Hide previous results and errors
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
-            loadingDiv.style.display = 'block';
-            
-            try {
-                const formData = new FormData();
-                formData.append('instagram_url', url);
-                
-                const response = await fetch('/download', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                loadingDiv.style.display = 'none';
-                
-                if (data.success && data.content) {
-                    // Render content and show success section
-                    renderContent(data.content);
-                    successDiv.style.display = 'block';
-                    
-                    // Smooth scroll to results
-                    successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                } else if (data.error) {
-                    // Show error message
-                    document.getElementById('errorText').textContent = data.error;
-                    errorDiv.style.display = 'block';
-                    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                loadingDiv.style.display = 'none';
-                document.getElementById('errorText').textContent = 'Network error. Please check your connection and try again.';
-                errorDiv.style.display = 'block';
-                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            const url = this.getAttribute("href");
+            const filename = this.getAttribute("download");
+
+            // Create a temporary link to trigger download
+            fetch(url)
+              .then((response) => response.blob())
+              .then((blob) => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.style.display = "none";
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+              })
+              .catch(() => {
+                // Fallback: open in new tab if fetch fails (CORS issue)
+                window.open(url, "_blank");
+              });
+          });
+        });
+      }
+
+      // Setup image error handlers
+      function setupImageErrorHandlers() {
+        const images = document.querySelectorAll(
+          ".image-container img, .carousel-item img"
+        );
+        images.forEach((img) => {
+          img.addEventListener("error", function () {
+            this.style.display = "none";
+            const errorMsg = document.createElement("div");
+            errorMsg.style.cssText =
+              "padding: 20px; background: #fee; color: #c62828; border-radius: 10px; text-align: center;";
+            errorMsg.textContent =
+              "⚠️ Image failed to load. Click download button to save it directly.";
+            this.parentElement.insertBefore(errorMsg, this);
+          });
+        });
+      }
+
+      // Handle form submission with AJAX (Single Page Experience)
+      document
+        .getElementById("downloadForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const url = document.getElementById("instagram_url").value;
+          const loadingDiv = document.getElementById("loading");
+          const errorDiv = document.getElementById("errorMessage");
+          const successDiv = document.getElementById("successSection");
+
+          // Hide previous results and errors
+          errorDiv.style.display = "none";
+          successDiv.style.display = "none";
+          loadingDiv.style.display = "block";
+
+          try {
+            const formData = new FormData();
+            formData.append("instagram_url", url);
+
+            const response = await fetch("/download", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            loadingDiv.style.display = "none";
+
+            if (data.success && data.content) {
+              // Render content and show success section
+              renderContent(data.content);
+              successDiv.style.display = "block";
+
+              // Smooth scroll to results
+              successDiv.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+              });
+            } else if (data.error) {
+              // Show error message
+              document.getElementById("errorText").textContent = data.error;
+              errorDiv.style.display = "block";
+              errorDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
             }
+          } catch (error) {
+            console.error("Error:", error);
+            loadingDiv.style.display = "none";
+            document.getElementById("errorText").textContent =
+              "Network error. Please check your connection and try again.";
+            errorDiv.style.display = "block";
+            errorDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
         });
     </script>
-</body>
+  </body>
 </html>

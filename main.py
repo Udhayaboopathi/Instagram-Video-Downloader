@@ -68,8 +68,7 @@ def download_instagram_content(url: str):
             compress_json=False,
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             max_connection_attempts=3,
-            request_timeout=10,
-            video_format='mp4'  # Ensure MP4 format
+            request_timeout=10
         )
         
         # Disable rate limiting warnings
